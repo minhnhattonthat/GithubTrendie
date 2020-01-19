@@ -13,7 +13,7 @@
         android:layout_marginBottom="21dp"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
-        android:src="@drawable/avatar_loading"
+        android:src="@drawable/shape_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
