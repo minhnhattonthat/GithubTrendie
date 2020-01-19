@@ -12,11 +12,13 @@ import com.nathan.app.githubtrendie.ui.trending.RepoAdapter.RepoHolder
 class RepoAdapter internal constructor(private val clickListener: OnRepoClickListener) :
     RecyclerView.Adapter<RepoHolder>() {
 
-    var repos = mutableListOf<Repo>()
-        set(list) {
-            val result = DiffUtil.calculateDiff(RepoDiffCallback(this.repos, list))
-            result.dispatchUpdatesTo(this)
-        }
+    private lateinit var repoList: List<Repo>
+
+    fun updateList(list:List<Repo>) {
+        val result = DiffUtil.calculateDiff(RepoDiffCallback(this.repoList, list))
+        result.dispatchUpdatesTo(this)
+        repoList = list
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoHolder {
         val binding =
@@ -25,13 +27,13 @@ class RepoAdapter internal constructor(private val clickListener: OnRepoClickLis
     }
 
     override fun onBindViewHolder(holder: RepoHolder, position: Int) {
-        val repo = repos[position]
+        val repo = repoList[position]
         holder.binding.repo = repo
         holder.binding.listener = clickListener
     }
 
     override fun getItemCount(): Int {
-        return repos.size
+        return if(::repoList.isInitialized) repoList.size else 0
     }
 
     inner class RepoHolder(var binding: RowRepoBinding) :
