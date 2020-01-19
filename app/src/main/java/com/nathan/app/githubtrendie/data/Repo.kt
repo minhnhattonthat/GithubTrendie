@@ -1,6 +1,6 @@
 package com.nathan.app.githubtrendie.data
 
-data class RepoModel(
+data class Repo(
     val author: String,
     val avatar: String,
     val builtBy: List<BuiltBy>,
