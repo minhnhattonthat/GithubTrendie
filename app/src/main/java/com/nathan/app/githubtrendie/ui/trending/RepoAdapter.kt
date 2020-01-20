@@ -14,7 +14,10 @@ class RepoAdapter internal constructor() :
 
     private lateinit var repoList: List<Repo>
 
+    private var lastPositionExpanded = -1
+
     fun updateList(list: List<Repo>) {
+        lastPositionExpanded = -1
         if (!::repoList.isInitialized) {
             repoList = list
             notifyDataSetChanged()
@@ -34,8 +37,18 @@ class RepoAdapter internal constructor() :
     override fun onBindViewHolder(holder: RepoHolder, position: Int) {
         val repo = repoList[position]
         holder.binding.repo = repo
-        holder.binding.isExpanded = false
-        holder.binding.root.setOnClickListener { holder.binding.isExpanded = !holder.binding.isExpanded }
+        holder.binding.isExpanded = position == lastPositionExpanded
+        holder.binding.root.setOnClickListener {
+            if (lastPositionExpanded == position) {
+                lastPositionExpanded = -1
+                notifyItemChanged(position)
+            } else {
+                val lastPosition = lastPositionExpanded
+                lastPositionExpanded = position
+                notifyItemChanged(lastPosition)
+                notifyItemChanged(position)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
