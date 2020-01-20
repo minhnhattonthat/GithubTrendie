@@ -12,10 +12,6 @@
             type="com.nathan.app.githubtrendie.data.Repo" />
 
         <variable
-            name="listener"
-            type="com.nathan.app.githubtrendie.ui.trending.OnRepoClickListener" />
-
-        <variable
             name="isExpanded"
             type="boolean" />
 
@@ -24,9 +20,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:foreground="?android:selectableItemBackground"
-        android:onClick="@{() -> listener.onClick(record)}">
+        android:background="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/avatar"
@@ -84,7 +78,7 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:fontFamily="@font/ping_fang"
-            android:maxLines="2"
+            android:maxLines="3"
             android:text="@{repo.description}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/avatar"
@@ -93,12 +87,12 @@
 
         <ImageView
             android:id="@+id/language_color"
+            tintColor="@{repo.languageColor}"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="16dp"
             android:contentDescription="@null"
             android:src="@drawable/shape_circle"
-            android:tint="@{repo.languageColor}"
             app:layout_constraintBottom_toBottomOf="@id/language_text"
             app:layout_constraintStart_toEndOf="@id/avatar"
             app:layout_constraintTop_toTopOf="@id/language_text"
@@ -114,6 +108,7 @@
             android:fontFamily="sans-serif"
             android:text="@{repo.language}"
             android:textSize="12sp"
+            android:visibility="@{repo.language == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/language_color"
             app:layout_constraintTop_toBottomOf="@id/desc_text"
@@ -138,7 +133,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif"
-            android:text="@{repo.stars}"
+            android:text="@{String.valueOf(repo.stars)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/star_icon"
             app:layout_constraintTop_toBottomOf="@id/desc_text"
@@ -163,7 +158,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif"
-            android:text="@{repo.forks}"
+            android:text="@{String.valueOf(repo.forks)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/fork_icon"
             app:layout_constraintTop_toBottomOf="@id/desc_text"
