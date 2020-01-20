@@ -53,6 +53,7 @@ class TrendingFragment : Fragment() {
         moreIcon.setOnClickListener {
             popupMenu.show()
         }
+        popupMenu.setOnMenuItemClickListener { onOptionsItemSelected(it) }
 
         return binding.root
     }
@@ -79,11 +80,11 @@ class TrendingFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.name_menu_item -> {
-                // TODO: User clicked the name button
+                viewModel.repoAdapter.sortByName()
                 true
             }
             R.id.stars_menu_item -> {
-                // TODO: User clicked the stars button
+                viewModel.repoAdapter.sortByStar()
                 true
             }
             else -> super.onOptionsItemSelected(item)

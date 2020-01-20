@@ -28,6 +28,24 @@ class RepoAdapter internal constructor() :
         }
     }
 
+    fun sortByStar() {
+        if (!::repoList.isInitialized) {
+            return
+        }
+        lastPositionExpanded = -1
+        repoList = repoList.sortedBy { it.stars }
+        notifyDataSetChanged()
+    }
+
+    fun sortByName() {
+        if (!::repoList.isInitialized) {
+            return
+        }
+        lastPositionExpanded = -1
+        repoList = repoList.sortedBy { it.name }
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoHolder {
         val binding =
             RowRepoBinding.inflate(LayoutInflater.from(parent.context))
