@@ -53,9 +53,9 @@ class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
         subscription = Observable.fromCallable { repoDao.all }
             .concatMap { dbList ->
                 if (dbList.isEmpty())
-                    trendingApi.getRepositories().concatMap { apiPostList ->
-                        repoDao.insertAll(*apiPostList.toTypedArray())
-                        Observable.just(apiPostList)
+                    trendingApi.getRepositories().concatMap { apiList ->
+                        repoDao.insertAll(*apiList.toTypedArray())
+                        Observable.just(apiList)
                     }
                 else
                     Observable.just(dbList)
@@ -66,7 +66,7 @@ class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
             .doOnTerminate { onFetchReposFinish() }
             .subscribe(
                 { result -> onFetchReposSuccess(result) },
-                { onRetrievePostListError(it) }
+                { onRetrieveRepoListError(it) }
             )
     }
 
@@ -83,7 +83,7 @@ class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
         repoAdapter.updateList(list)
     }
 
-    private fun onRetrievePostListError(t: Throwable) {
+    private fun onRetrieveRepoListError(t: Throwable) {
         hasError.value = true
     }
 

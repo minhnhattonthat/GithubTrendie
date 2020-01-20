@@ -11,20 +11,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 class ApiModule(private val apiUrl: String) {
 
-    /**
-     * Provides the Post service implementation.
-     * @param retrofit the Retrofit object used to instantiate the service
-     * @return the Post service implementation.
-     */
     @Provides
     internal fun provideGithubTrendingApi(retrofit: Retrofit): GithubTrendingApi {
         return retrofit.create(GithubTrendingApi::class.java)
     }
 
-    /**
-     * Provides the Retrofit object.
-     * @return the Retrofit object
-     */
     @Provides
     internal fun provideRetrofitInterface(): Retrofit {
         return Retrofit.Builder()

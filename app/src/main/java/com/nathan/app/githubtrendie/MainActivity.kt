@@ -1,7 +1,7 @@
 package com.nathan.app.githubtrendie
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.nathan.app.githubtrendie.ui.trending.TrendingFragment
 
 class MainActivity : AppCompatActivity() {
