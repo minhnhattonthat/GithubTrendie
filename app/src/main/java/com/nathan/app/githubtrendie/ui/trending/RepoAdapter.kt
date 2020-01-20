@@ -9,7 +9,7 @@ import com.nathan.app.githubtrendie.data.Repo
 import com.nathan.app.githubtrendie.databinding.RowRepoBinding
 import com.nathan.app.githubtrendie.ui.trending.RepoAdapter.RepoHolder
 
-class RepoAdapter internal constructor(private val clickListener: OnRepoClickListener) :
+class RepoAdapter internal constructor() :
     RecyclerView.Adapter<RepoHolder>() {
 
     private lateinit var repoList: List<Repo>
@@ -34,7 +34,8 @@ class RepoAdapter internal constructor(private val clickListener: OnRepoClickLis
     override fun onBindViewHolder(holder: RepoHolder, position: Int) {
         val repo = repoList[position]
         holder.binding.repo = repo
-        holder.binding.listener = clickListener
+        holder.binding.isExpanded = false
+        holder.binding.root.setOnClickListener { holder.binding.isExpanded = !holder.binding.isExpanded }
     }
 
     override fun getItemCount(): Int {
