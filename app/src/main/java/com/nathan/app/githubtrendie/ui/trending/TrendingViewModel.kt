@@ -1,5 +1,7 @@
 package com.nathan.app.githubtrendie.ui.trending
 
+import android.content.SharedPreferences
+import android.text.format.DateUtils
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,9 +16,13 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.lang.System.currentTimeMillis
 import javax.inject.Inject
 
-class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
+class TrendingViewModel(
+    private val repoDao: RepoDao,
+    private val sharedPreferences: SharedPreferences
+) : ViewModel() {
 
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
@@ -34,7 +40,7 @@ class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
         loadRepos()
     }
     val swipeRefreshListener = SwipeRefreshLayout.OnRefreshListener {
-        loadRepos()
+        loadRepos(true)
     }
 
     private lateinit var subscription: Disposable
@@ -49,18 +55,20 @@ class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
         subscription.dispose()
     }
 
-    private fun loadRepos() {
+    private fun loadRepos(forceRefresh: Boolean = false) {
         subscription = Observable.fromCallable { repoDao.all }
             .concatMap { dbList ->
                 if (dbList.isEmpty())
                     trendingApi.getRepositories().concatMap { apiList ->
                         repoDao.insertAll(*apiList.toTypedArray())
+                        saveCacheTimestamp()
                         Observable.just(apiList)
                     }
                 else
                     Observable.just(dbList)
             }
             .subscribeOn(Schedulers.io())
+            .doOnNext { if (forceRefresh || isCacheExpired()) repoDao.deleteAll() }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { onFetchReposStart() }
             .doOnTerminate { onFetchReposFinish() }
@@ -68,6 +76,17 @@ class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
                 { result -> onFetchReposSuccess(result) },
                 { onRetrieveRepoListError(it) }
             )
+    }
+
+    private fun isCacheExpired(): Boolean {
+        val lastCached = sharedPreferences.getLong(LAST_CACHED_KEY, 0)
+        return currentTimeMillis() - lastCached > 2 * DateUtils.HOUR_IN_MILLIS
+    }
+
+    private fun saveCacheTimestamp() {
+        val editor = sharedPreferences.edit()
+        editor.putLong(LAST_CACHED_KEY, currentTimeMillis())
+        editor.apply()
     }
 
     private fun onFetchReposStart() {
@@ -85,6 +104,10 @@ class TrendingViewModel(private val repoDao: RepoDao) : ViewModel() {
 
     private fun onRetrieveRepoListError(t: Throwable) {
         hasError.value = true
+    }
+
+    companion object {
+        private const val LAST_CACHED_KEY = "lastCached"
     }
 
 }

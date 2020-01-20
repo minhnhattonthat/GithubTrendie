@@ -69,6 +69,7 @@
                 android:id="@+id/repo_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="@{safeUnbox(viewModel.hasError) ? View.GONE : View.VISIBLE}"
                 tools:listitem="@layout/row_repo" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

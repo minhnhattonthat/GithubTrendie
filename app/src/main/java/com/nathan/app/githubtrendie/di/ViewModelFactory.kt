@@ -1,5 +1,6 @@
 package com.nathan.app.githubtrendie.di
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,8 +14,10 @@ class ViewModelFactory(private val activity: AppCompatActivity) : ViewModelProvi
             val db =
                 Room.databaseBuilder(activity.applicationContext, AppDatabase::class.java, "repos")
                     .build()
+            val sharedPreferences =
+                activity.applicationContext.getSharedPreferences("global", Context.MODE_PRIVATE)
             @Suppress("UNCHECKED_CAST")
-            return TrendingViewModel(db.repoDao()) as T
+            return TrendingViewModel(db.repoDao(), sharedPreferences) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
 

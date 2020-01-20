@@ -11,4 +11,7 @@ interface RepoDao {
 
     @Insert
     fun insertAll(vararg repos: Repo)
+
+    @Query("DELETE FROM repo")
+    fun deleteAll()
 }
