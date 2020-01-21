@@ -33,7 +33,7 @@ class RepoAdapter internal constructor() :
             return
         }
         lastPositionExpanded = -1
-        repoList = repoList.sortedBy { it.stars }
+        repoList = repoList.sortedByDescending { it.stars }
         notifyDataSetChanged()
     }
 
