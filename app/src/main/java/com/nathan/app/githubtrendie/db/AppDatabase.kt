@@ -1,7 +1,8 @@
-package com.nathan.app.githubtrendie.data
+package com.nathan.app.githubtrendie.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.nathan.app.githubtrendie.vo.Repo
 
 
 @Database(entities = [Repo::class], version = 1)

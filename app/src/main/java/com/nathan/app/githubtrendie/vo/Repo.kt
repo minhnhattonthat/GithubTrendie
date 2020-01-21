@@ -1,4 +1,4 @@
-package com.nathan.app.githubtrendie.data
+package com.nathan.app.githubtrendie.vo
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,5 +1,6 @@
 package com.nathan.app.githubtrendie.ui.trending
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -9,15 +10,19 @@ import android.widget.Button
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nathan.app.githubtrendie.MainActivity
 import com.nathan.app.githubtrendie.R
 import com.nathan.app.githubtrendie.databinding.TrendingFragmentBinding
-import com.nathan.app.githubtrendie.di.ViewModelFactory
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 
 class TrendingFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         private const val LOADING_ITEMS_SIZE = 10
@@ -60,7 +65,7 @@ class TrendingFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(activity as MainActivity))
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(TrendingViewModel::class.java)
 
         binding.offlineLayout.setOnInflateListener { _, inflated ->
@@ -83,6 +88,11 @@ class TrendingFragment : Fragment() {
                 }
             }
         })
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

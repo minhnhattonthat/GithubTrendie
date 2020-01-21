@@ -9,7 +9,7 @@
 
         <variable
             name="repo"
-            type="com.nathan.app.githubtrendie.data.Repo" />
+            type="com.nathan.app.githubtrendie.vo.Repo" />
 
         <variable
             name="isExpanded"

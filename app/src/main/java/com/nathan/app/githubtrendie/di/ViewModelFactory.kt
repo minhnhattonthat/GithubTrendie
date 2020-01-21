@@ -1,25 +1,26 @@
 package com.nathan.app.githubtrendie.di
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
-import com.nathan.app.githubtrendie.data.AppDatabase
-import com.nathan.app.githubtrendie.ui.trending.TrendingViewModel
+import javax.inject.Inject
+import javax.inject.Provider
+import javax.inject.Singleton
 
-class ViewModelFactory(private val activity: AppCompatActivity) : ViewModelProvider.Factory {
+@Singleton
+class ViewModelFactory @Inject constructor(
+    private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TrendingViewModel::class.java)) {
-            val db =
-                Room.databaseBuilder(activity.applicationContext, AppDatabase::class.java, "repos")
-                    .build()
-            val sharedPreferences =
-                activity.applicationContext.getSharedPreferences("global", Context.MODE_PRIVATE)
+        val creator = creators[modelClass] ?: creators.entries.firstOrNull {
+            modelClass.isAssignableFrom(it.key)
+        }?.value ?: throw IllegalArgumentException("unknown model class $modelClass")
+        try {
             @Suppress("UNCHECKED_CAST")
-            return TrendingViewModel(db.repoDao(), sharedPreferences) as T
+            return creator.get() as T
+        } catch (e: Exception) {
+            throw RuntimeException(e)
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
 
     }
 }

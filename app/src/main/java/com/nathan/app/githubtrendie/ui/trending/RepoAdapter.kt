@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.nathan.app.githubtrendie.data.Repo
+import com.nathan.app.githubtrendie.vo.Repo
 import com.nathan.app.githubtrendie.databinding.RowRepoBinding
 import com.nathan.app.githubtrendie.ui.trending.RepoAdapter.RepoHolder
 
