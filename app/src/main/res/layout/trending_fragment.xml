@@ -32,18 +32,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="@string/font_roboto_medium"
                 android:text="@string/title_trending"
                 android:textColor="@color/colorTitle"
                 android:textSize="24sp" />
 
             <ImageView
                 android:id="@+id/more_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/menu_icon_size"
+                android:layout_height="@dimen/menu_icon_size"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/margin_regular"
                 android:contentDescription="@null"
                 android:scaleType="center"
                 android:src="@drawable/ic_more_black_24" />

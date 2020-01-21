@@ -6,4 +6,6 @@
     <string name="text_offline_main">Something went wrong..</string>
     <string name="text_offline_sub">An alien is probably blocking your signal.</string>
     <string name="button_retry">Retry</string>
+    <string name="font_roboto_medium">sans-serif-medium</string>
+    <string name="font_roboto_regular">sans-serif</string>
 </resources>
