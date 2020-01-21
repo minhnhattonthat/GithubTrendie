@@ -16,7 +16,8 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import java.lang.System.currentTimeMillis
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TrendingViewModel(
@@ -26,7 +27,7 @@ class TrendingViewModel(
 
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .apiModule(ApiModule("https://github-trending-api.now.sh/"))
+        .apiModule(ApiModule(API_URL))
         .build()
 
     @Inject
@@ -44,6 +45,7 @@ class TrendingViewModel(
     }
 
     private lateinit var subscription: Disposable
+    private lateinit var intervalDisposable: Disposable
 
     init {
         injector.inject(this)
@@ -53,13 +55,15 @@ class TrendingViewModel(
     override fun onCleared() {
         super.onCleared()
         subscription.dispose()
+        intervalDisposable.dispose()
     }
 
     private fun loadRepos(forceRefresh: Boolean = false) {
         subscription = Observable.fromCallable { repoDao.all }
             .concatMap { dbList ->
-                if (dbList.isEmpty())
+                if (dbList.isEmpty() || forceRefresh || isCacheExpired())
                     trendingApi.getRepositories().concatMap { apiList ->
+                        repoDao.deleteAll()
                         repoDao.insertAll(*apiList.toTypedArray())
                         saveCacheTimestamp()
                         Observable.just(apiList)
@@ -68,24 +72,51 @@ class TrendingViewModel(
                     Observable.just(dbList)
             }
             .subscribeOn(Schedulers.io())
-            .doOnNext { if (forceRefresh || isCacheExpired()) repoDao.deleteAll() }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { onFetchReposStart() }
-            .doOnTerminate { onFetchReposFinish() }
+            .doOnTerminate {
+                onFetchReposFinish()
+                intervalCheckCache()
+            }
             .subscribe(
                 { result -> onFetchReposSuccess(result) },
                 { onRetrieveRepoListError(it) }
             )
     }
 
+    private fun intervalCheckCache() {
+        if (::intervalDisposable.isInitialized) {
+            intervalDisposable.dispose()
+        }
+        val delay = if (cacheExpiresInMillis() <= 0) 0 else cacheExpiresInMillis()
+        intervalDisposable =
+            Observable.interval(delay, 2 * DateUtils.HOUR_IN_MILLIS, TimeUnit.MILLISECONDS)
+                .concatMap {
+                    trendingApi.getRepositories().concatMap { apiList ->
+                        repoDao.deleteAll()
+                        repoDao.insertAll(*apiList.toTypedArray())
+                        saveCacheTimestamp()
+                        Observable.just(apiList)
+                    }
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { result -> onFetchReposSuccess(result) }
+    }
+
     private fun isCacheExpired(): Boolean {
-        val lastCached = sharedPreferences.getLong(LAST_CACHED_KEY, 0)
-        return currentTimeMillis() - lastCached > 2 * DateUtils.HOUR_IN_MILLIS
+        return cacheExpiresInMillis() <= 0
+    }
+
+    private fun cacheExpiresInMillis(): Long {
+        val lastCachedTime = sharedPreferences.getLong(LAST_CACHED_KEY, 0)
+        val now = Date().time
+        return CACHE_EXPIRATION_MILLIS - (now - lastCachedTime)
     }
 
     private fun saveCacheTimestamp() {
         val editor = sharedPreferences.edit()
-        editor.putLong(LAST_CACHED_KEY, currentTimeMillis())
+        editor.putLong(LAST_CACHED_KEY, Date().time)
         editor.apply()
     }
 
@@ -103,11 +134,14 @@ class TrendingViewModel(
     }
 
     private fun onRetrieveRepoListError(t: Throwable) {
+        t.printStackTrace()
         hasError.value = true
     }
 
     companion object {
         private const val LAST_CACHED_KEY = "lastCached"
+        private const val CACHE_EXPIRATION_MILLIS = 2 * DateUtils.HOUR_IN_MILLIS
+        private const val API_URL = "https://github-trending-api.now.sh/"
     }
 
 }
