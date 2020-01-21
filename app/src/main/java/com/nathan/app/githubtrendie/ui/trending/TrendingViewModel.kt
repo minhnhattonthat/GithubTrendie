@@ -76,8 +76,11 @@ class TrendingViewModel(
             .doOnSubscribe { onFetchReposStart() }
             .doOnTerminate {
                 onFetchReposFinish()
+            }
+            .doOnComplete {
                 intervalCheckCache()
             }
+            .doOnError { it.printStackTrace() }
             .subscribe(
                 { result -> onFetchReposSuccess(result) },
                 { onRetrieveRepoListError(it) }
@@ -101,6 +104,7 @@ class TrendingViewModel(
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError { it.printStackTrace() }
                 .subscribe { result -> onFetchReposSuccess(result) }
     }
 

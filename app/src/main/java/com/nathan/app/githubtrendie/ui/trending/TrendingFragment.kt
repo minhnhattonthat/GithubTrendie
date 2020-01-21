@@ -20,7 +20,7 @@ import com.nathan.app.githubtrendie.di.ViewModelFactory
 class TrendingFragment : Fragment() {
 
     companion object {
-        private const val LOADING_ITEMS = 10
+        private const val LOADING_ITEMS_SIZE = 10
         fun newInstance() = TrendingFragment()
     }
 
@@ -45,7 +45,7 @@ class TrendingFragment : Fragment() {
         binding.repoList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        binding.repoList.adapter = LoadingAdapter(IntArray(LOADING_ITEMS))
+        binding.repoList.adapter = LoadingAdapter(IntArray(LOADING_ITEMS_SIZE))
 
         val moreIcon = binding.moreIcon
         val popupMenu = PopupMenu(this.context!!, moreIcon)
@@ -63,8 +63,13 @@ class TrendingFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, ViewModelFactory(activity as MainActivity))
             .get(TrendingViewModel::class.java)
 
-        binding.offlineLayout.findViewById<Button>(R.id.retry_button)
-            .setOnClickListener(viewModel.retryClickListener)
+        binding.offlineLayout.setOnInflateListener { _, inflated ->
+            inflated.findViewById<Button>(R.id.retry_button)
+                .setOnClickListener(viewModel.retryClickListener)
+            viewModel.hasError.observe(this, Observer { hasError ->
+                inflated.visibility = if (hasError) View.VISIBLE else View.GONE
+            })
+        }
 
         binding.swipeLayout.setOnRefreshListener(viewModel.swipeRefreshListener)
 
@@ -73,7 +78,7 @@ class TrendingFragment : Fragment() {
         viewModel.loading.observe(this, Observer { loading ->
             if (!loading) {
                 binding.swipeLayout.isRefreshing = loading
-                if (binding.repoList.adapter is LoadingAdapter) {
+                if (binding.repoList.adapter is LoadingAdapter && viewModel.repoAdapter.itemCount > 0) {
                     binding.repoList.adapter = viewModel.repoAdapter
                 }
             }

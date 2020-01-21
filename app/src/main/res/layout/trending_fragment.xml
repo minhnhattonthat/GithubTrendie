@@ -73,11 +73,12 @@
                 tools:listitem="@layout/row_repo" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <include
+        <ViewStub
             android:id="@+id/offline_layout"
-            layout="@layout/layout_noconnection"
-            android:visibility="@{safeUnbox(viewModel.hasError) ? View.VISIBLE : View.GONE}"
-            tools:visibility="gone" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/layout_noconnection"
+            android:visibility="@{safeUnbox(viewModel.hasError) ? View.VISIBLE : View.GONE}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
