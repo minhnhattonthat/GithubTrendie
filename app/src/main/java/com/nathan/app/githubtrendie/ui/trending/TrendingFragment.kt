@@ -15,12 +15,12 @@ import com.nathan.app.githubtrendie.MainActivity
 import com.nathan.app.githubtrendie.R
 import com.nathan.app.githubtrendie.databinding.TrendingFragmentBinding
 import com.nathan.app.githubtrendie.di.ViewModelFactory
-import com.nathan.app.githubtrendie.widget.SimpleLoadingAdapter
 
 
 class TrendingFragment : Fragment() {
 
     companion object {
+        private const val LOADING_ITEMS = 10
         fun newInstance() = TrendingFragment()
     }
 
@@ -42,10 +42,10 @@ class TrendingFragment : Fragment() {
         // For databinding with LiveData
         binding.lifecycleOwner = this
 
-        binding.loadingList.adapter = SimpleLoadingAdapter(IntArray(10))
-
         binding.repoList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
+        binding.repoList.adapter = LoadingAdapter(IntArray(LOADING_ITEMS))
 
         val moreIcon = binding.moreIcon
         val popupMenu = PopupMenu(this.context!!, moreIcon)
@@ -68,13 +68,14 @@ class TrendingFragment : Fragment() {
 
         binding.swipeLayout.setOnRefreshListener(viewModel.swipeRefreshListener)
 
-        binding.repoList.adapter = viewModel.repoAdapter
-
         binding.viewModel = viewModel
 
         viewModel.loading.observe(this, Observer { loading ->
             if (!loading) {
                 binding.swipeLayout.isRefreshing = loading
+                if (binding.repoList.adapter is LoadingAdapter) {
+                    binding.repoList.adapter = viewModel.repoAdapter
+                }
             }
         })
     }
