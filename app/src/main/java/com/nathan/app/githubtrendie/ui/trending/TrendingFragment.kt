@@ -73,7 +73,9 @@ class TrendingFragment : Fragment() {
         binding.viewModel = viewModel
 
         viewModel.loading.observe(this, Observer { loading ->
-            binding.swipeLayout.isRefreshing = loading
+            if (!loading) {
+                binding.swipeLayout.isRefreshing = loading
+            }
         })
     }
 
