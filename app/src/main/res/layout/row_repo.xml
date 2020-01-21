@@ -108,7 +108,6 @@
             android:fontFamily="sans-serif"
             android:text="@{repo.language}"
             android:textSize="12sp"
-            android:visibility="@{repo.language == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/language_color"
             app:layout_constraintTop_toBottomOf="@id/desc_text"
@@ -190,7 +189,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="@{isExpanded ? View.VISIBLE : View.GONE}"
-            app:constraint_referenced_ids="desc_text,language_color,language_text,star_icon,stars_text,fork_icon,forks_text,shadow" />
+            app:constraint_referenced_ids="desc_text,star_icon,stars_text,fork_icon,forks_text,shadow" />
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{isExpanded &amp;&amp; repo.language != null  ? View.VISIBLE : View.GONE}"
+            app:constraint_referenced_ids="language_color,language_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
