@@ -5,12 +5,11 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.nathan.app.githubtrendie.AppSchedulers
 import com.nathan.app.githubtrendie.repository.RepoRepository
 import com.nathan.app.githubtrendie.vo.Repo
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -27,8 +26,8 @@ class TrendingViewModel @Inject constructor(private val repository: RepoReposito
         loadRepos(true)
     }
 
-    private lateinit var subscription: Disposable
-    private lateinit var intervalDisposable: Disposable
+    lateinit var subscription: Disposable
+    lateinit var intervalDisposable: Disposable
 
     init {
         loadRepos()
@@ -42,14 +41,10 @@ class TrendingViewModel @Inject constructor(private val repository: RepoReposito
 
     private fun loadRepos(forceRefresh: Boolean = false) {
         subscription = repository.getRepos(forceRefresh)
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AppSchedulers.ui())
             .doOnSubscribe { onFetchReposStart() }
-            .doOnTerminate {
-                onFetchReposFinish()
-            }
-            .doOnComplete {
-                intervalCheckCache()
-            }
+            .doOnTerminate { onFetchReposFinish() }
+            .doOnComplete { intervalCheckCache() }
             .doOnError { it.printStackTrace() }
             .subscribe(
                 { result -> onFetchReposSuccess(result) },
@@ -68,8 +63,8 @@ class TrendingViewModel @Inject constructor(private val repository: RepoReposito
                 .concatMap {
                     repository.refreshedRepo()
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AppSchedulers.io())
+                .observeOn(AppSchedulers.ui())
                 .doOnError { it.printStackTrace() }
                 .subscribe { result -> onFetchReposSuccess(result) }
     }

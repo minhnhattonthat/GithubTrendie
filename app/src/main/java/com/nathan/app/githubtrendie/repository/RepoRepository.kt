@@ -2,15 +2,17 @@ package com.nathan.app.githubtrendie.repository
 
 import android.content.SharedPreferences
 import android.text.format.DateUtils
+import com.nathan.app.githubtrendie.AppSchedulers
 import com.nathan.app.githubtrendie.api.GithubTrendingApi
 import com.nathan.app.githubtrendie.db.RepoDao
+import com.nathan.app.githubtrendie.testing.OpenForTesting
 import com.nathan.app.githubtrendie.vo.Repo
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OpenForTesting
 @Singleton
 class RepoRepository @Inject constructor(
     private val trendingApi: GithubTrendingApi,
@@ -29,7 +31,7 @@ class RepoRepository @Inject constructor(
                 else
                     Observable.just(dbList)
             }
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(AppSchedulers.io())
     }
 
     fun refreshedRepo(): Observable<List<Repo>> {
@@ -39,7 +41,7 @@ class RepoRepository @Inject constructor(
             saveCacheTimestamp()
             Observable.fromCallable { repoDao.all }
         }
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(AppSchedulers.io())
     }
 
     private fun isCacheExpired(): Boolean {
