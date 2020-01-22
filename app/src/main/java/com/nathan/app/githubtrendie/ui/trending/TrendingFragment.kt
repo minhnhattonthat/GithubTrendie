@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nathan.app.githubtrendie.R
 import com.nathan.app.githubtrendie.databinding.TrendingFragmentBinding
+import com.nathan.app.githubtrendie.vo.Repo
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -76,6 +77,16 @@ class TrendingFragment : Fragment() {
             })
         }
 
+        viewModel.repos.observe(this,
+            Observer<List<Repo>> { repos: List<Repo>? ->
+                if (repos == null) return@Observer
+                if (binding.repoList.adapter !is RepoAdapter) {
+                    binding.repoList.adapter = RepoAdapter()
+                }
+                (binding.repoList.adapter as RepoAdapter).updateList(repos)
+            }
+        )
+
         binding.swipeLayout.setOnRefreshListener(viewModel.swipeRefreshListener)
 
         binding.viewModel = viewModel
@@ -83,9 +94,6 @@ class TrendingFragment : Fragment() {
         viewModel.loading.observe(this, Observer { loading ->
             if (!loading) {
                 binding.swipeLayout.isRefreshing = loading
-                if (binding.repoList.adapter is LoadingAdapter && viewModel.repoAdapter.itemCount > 0) {
-                    binding.repoList.adapter = viewModel.repoAdapter
-                }
             }
         })
     }
@@ -96,13 +104,14 @@ class TrendingFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (binding.repoList.adapter !is RepoAdapter) return false
         return when (item.itemId) {
             R.id.name_menu_item -> {
-                viewModel.repoAdapter.sortByName()
+                (binding.repoList.adapter as RepoAdapter).sortByName()
                 true
             }
             R.id.stars_menu_item -> {
-                viewModel.repoAdapter.sortByStar()
+                (binding.repoList.adapter as RepoAdapter).sortByStar()
                 true
             }
             else -> super.onOptionsItemSelected(item)

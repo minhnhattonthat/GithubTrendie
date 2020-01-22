@@ -7,20 +7,22 @@ import androidx.lifecycle.ViewModel
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nathan.app.githubtrendie.AppSchedulers
 import com.nathan.app.githubtrendie.repository.RepoRepository
+import com.nathan.app.githubtrendie.testing.OpenForTesting
 import com.nathan.app.githubtrendie.vo.Repo
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@OpenForTesting
 class TrendingViewModel @Inject constructor(private val repository: RepoRepository) : ViewModel() {
 
-    val repoAdapter: RepoAdapter = RepoAdapter()
+    val repos = MutableLiveData<List<Repo>>()
 
     val loading: MutableLiveData<Boolean> = MutableLiveData()
     val hasError: MutableLiveData<Boolean> = MutableLiveData()
     val retryClickListener = View.OnClickListener {
-        loadRepos()
+        loadRepos(true)
     }
     val swipeRefreshListener = SwipeRefreshLayout.OnRefreshListener {
         loadRepos(true)
@@ -79,7 +81,7 @@ class TrendingViewModel @Inject constructor(private val repository: RepoReposito
     }
 
     private fun onFetchReposSuccess(list: List<Repo>) {
-        repoAdapter.updateList(list)
+        repos.value = list
     }
 
     private fun onRetrieveRepoListError(t: Throwable) {
