@@ -126,13 +126,13 @@
 
         <TextView
             android:id="@+id/stars_text"
+            formattedNumber="@{repo.stars}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/icon_margin"
             android:layout_marginTop="@dimen/margin_small"
             android:layout_marginBottom="@dimen/margin_regular"
             android:fontFamily="@string/font_roboto_regular"
-            android:text="@{String.valueOf(repo.stars)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/star_icon"
             app:layout_constraintTop_toBottomOf="@id/desc_text"
@@ -151,13 +151,13 @@
 
         <TextView
             android:id="@+id/forks_text"
+            formattedNumber="@{repo.forks}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/icon_margin"
             android:layout_marginTop="@dimen/margin_small"
             android:layout_marginBottom="@dimen/margin_regular"
             android:fontFamily="@string/font_roboto_regular"
-            android:text="@{String.valueOf(repo.forks)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/fork_icon"
             app:layout_constraintTop_toBottomOf="@id/desc_text"
