@@ -78,9 +78,11 @@ class TrendingFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(TrendingViewModel::class.java)
 
+        viewModel.loadRepos()
+
         binding.offlineLayout.setOnInflateListener { _, inflated ->
             inflated.findViewById<Button>(R.id.retry_button)
-                .setOnClickListener(viewModel.retryClickListener)
+                .setOnClickListener { viewModel.loadRepos(true) }
             viewModel.hasError.observe(this, Observer { hasError ->
                 inflated.visibility = if (hasError) View.VISIBLE else View.GONE
             })
@@ -96,7 +98,7 @@ class TrendingFragment : Fragment() {
             }
         )
 
-        binding.swipeLayout.setOnRefreshListener(viewModel.swipeRefreshListener)
+        binding.swipeLayout.setOnRefreshListener { viewModel.loadRepos(true) }
 
         binding.viewModel = viewModel
 

@@ -1,10 +1,8 @@
 package com.nathan.app.githubtrendie.ui.trending
 
 import android.text.format.DateUtils
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nathan.app.githubtrendie.AppSchedulers
 import com.nathan.app.githubtrendie.repository.RepoRepository
 import com.nathan.app.githubtrendie.testing.OpenForTesting
@@ -21,19 +19,9 @@ class TrendingViewModel @Inject constructor(private val repository: RepoReposito
 
     val loading: MutableLiveData<Boolean> = MutableLiveData()
     val hasError: MutableLiveData<Boolean> = MutableLiveData()
-    val retryClickListener = View.OnClickListener {
-        loadRepos(true)
-    }
-    val swipeRefreshListener = SwipeRefreshLayout.OnRefreshListener {
-        loadRepos(true)
-    }
 
     lateinit var subscription: Disposable
     lateinit var intervalDisposable: Disposable
-
-    init {
-        loadRepos()
-    }
 
     override fun onCleared() {
         super.onCleared()
@@ -41,7 +29,7 @@ class TrendingViewModel @Inject constructor(private val repository: RepoReposito
         intervalDisposable.dispose()
     }
 
-    private fun loadRepos(forceRefresh: Boolean = false) {
+    fun loadRepos(forceRefresh: Boolean = false) {
         subscription = repository.getRepos(forceRefresh)
             .observeOn(AppSchedulers.ui())
             .doOnSubscribe { onFetchReposStart() }

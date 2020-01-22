@@ -34,17 +34,17 @@ class RepoRepository @Inject constructor(
             .subscribeOn(AppSchedulers.io())
     }
 
-    fun refreshedRepo(): Observable<List<Repo>> {
+    fun refreshedRepo(saveTimeStamp: Boolean = true): Observable<List<Repo>> {
         return trendingApi.getRepositories().concatMap { apiList ->
             repoDao.deleteAll()
             repoDao.insertAll(*apiList.toTypedArray())
-            saveCacheTimestamp()
+            if (saveTimeStamp) saveCacheTimestamp()
             Observable.fromCallable { repoDao.all }
         }
             .subscribeOn(AppSchedulers.io())
     }
 
-    private fun isCacheExpired(): Boolean {
+    fun isCacheExpired(): Boolean {
         return cacheExpiresInMillis() <= 0
     }
 
@@ -54,7 +54,7 @@ class RepoRepository @Inject constructor(
         return CACHE_EXPIRATION_MILLIS - (now - lastCachedTime)
     }
 
-    private fun saveCacheTimestamp() {
+    fun saveCacheTimestamp() {
         val editor = sharedPreferences.edit()
         editor.putLong(LAST_CACHED_KEY, Date().time)
         editor.apply()

@@ -2,14 +2,17 @@ package com.nathan.app.githubtrendie.ui.trending
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.nathan.app.githubtrendie.R
 import com.nathan.app.githubtrendie.databinding.RowRepoBinding
 import com.nathan.app.githubtrendie.ui.trending.RepoAdapter.RepoHolder
 import com.nathan.app.githubtrendie.vo.Repo
 
-class RepoAdapter internal constructor() :
+class RepoAdapter internal constructor(private val dataBindingComponent: DataBindingComponent) :
     RecyclerView.Adapter<RepoHolder>() {
 
     private lateinit var repoList: List<Repo>
@@ -47,8 +50,14 @@ class RepoAdapter internal constructor() :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoHolder {
-        val binding =
-            RowRepoBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = DataBindingUtil
+            .inflate<RowRepoBinding>(
+                LayoutInflater.from(parent.context),
+                R.layout.row_repo,
+                parent,
+                false,
+                dataBindingComponent
+            )
         return RepoHolder(binding)
     }
 
