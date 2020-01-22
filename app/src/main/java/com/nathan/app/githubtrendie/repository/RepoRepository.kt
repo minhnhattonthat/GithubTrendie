@@ -27,8 +27,9 @@ class RepoRepository @Inject constructor(
                 if (dbList.isEmpty())
                     refreshedRepo()
                 else
-                    Observable.just(dbList).subscribeOn(Schedulers.io())
+                    Observable.just(dbList)
             }
+            .subscribeOn(Schedulers.io())
     }
 
     fun refreshedRepo(): Observable<List<Repo>> {
