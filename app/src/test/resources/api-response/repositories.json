@@ -1,0 +1,63 @@
+[
+  {
+    "author": "kbariotis",
+    "name": "templates",
+    "avatar": "https://github.com/kbariotis.png",
+    "url": "https://github.com/kbariotis/templates",
+    "description": "A set of standard document templates.",
+    "stars": 1265,
+    "forks": 96,
+    "currentPeriodStars": 233,
+    "builtBy": [
+      {
+        "username": "kbariotis",
+        "href": "https://github.com/kbariotis",
+        "avatar": "https://avatars2.githubusercontent.com/u/605742"
+      },
+      {
+        "username": "lipis",
+        "href": "https://github.com/lipis",
+        "avatar": "https://avatars1.githubusercontent.com/u/125676"
+      }
+    ]
+  },
+  {
+    "author": "microsoft",
+    "name": "ApplicationInspector",
+    "avatar": "https://github.com/microsoft.png",
+    "url": "https://github.com/microsoft/ApplicationInspector",
+    "description": "A software characterization source code analyzer that helps you understand what a program does by identifying interesting features and characteristics using static analysis and a customizable json based rules engine.",
+    "language": "C#",
+    "languageColor": "#178600",
+    "stars": 1225,
+    "forks": 111,
+    "currentPeriodStars": 457,
+    "builtBy": [
+      {
+        "username": "guyacosta",
+        "href": "https://github.com/guyacosta",
+        "avatar": "https://avatars2.githubusercontent.com/u/47648296"
+      },
+      {
+        "username": "daalcant",
+        "href": "https://github.com/daalcant",
+        "avatar": "https://avatars0.githubusercontent.com/u/50344095"
+      },
+      {
+        "username": "microsoftopensource",
+        "href": "https://github.com/microsoftopensource",
+        "avatar": "https://avatars1.githubusercontent.com/u/22527892"
+      },
+      {
+        "username": "garciaolais",
+        "href": "https://github.com/garciaolais",
+        "avatar": "https://avatars1.githubusercontent.com/u/14133711"
+      },
+      {
+        "username": "Ky7m",
+        "href": "https://github.com/Ky7m",
+        "avatar": "https://avatars1.githubusercontent.com/u/744569"
+      }
+    ]
+  }
+]
